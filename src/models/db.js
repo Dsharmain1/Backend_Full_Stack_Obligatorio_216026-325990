@@ -35,3 +35,52 @@ const instruments = [
     updatedAt: new Date("2025-03-01T09:00:00Z")
   }
 ];
+
+
+const findInstrumentById = id => instruments.find(instrument => instrument.id === id);
+
+const findInstrumentByTitle = title => instruments.find(instrument => {
+  return instrument.title.toLowerCase() === title.toLowerCase();
+});
+
+const deleteInstrumentById = id => {
+  const indexToDelete = instruments.findIndex(instrument => instrument.id === id);
+  if (index !== -1) {
+    instruments.splice(indexToDelete, 1);
+    return true;
+  }
+  return false;
+}
+
+const addInstrument = instrumentData => {
+  const newInstrument = {
+    id: instrumentId++,
+    ...instrumentData,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  };
+  instruments.push(newInstrument);
+  return newInstrument;
+}
+
+const updateInstrument = (id, updatedData) => {
+  const indexToUpdate = instruments.findIndex(instrument => instrument.id === id);
+    if (indexToUpdate === -1) {
+    return null;
+  }
+  const updatedInstrument = {
+    ...instruments[indexToUpdate],
+    ...updatedData,
+    updatedAt: new Date()
+  };
+  instruments[indexToUpdate] = updatedInstrument;
+  return updatedInstrument;
+}
+module.exports = {
+  instruments,
+  findInstrumentById,
+  findInstrumentByTitle,
+  deleteInstrumentById,
+  addInstrument,
+  updateInstrument
+};
