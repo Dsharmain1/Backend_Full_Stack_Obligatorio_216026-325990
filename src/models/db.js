@@ -15,7 +15,7 @@ const instruments = [
   {
     id: instrumentId++,
     title: "Piano",
-    description: "Piano de cola usado, en buen estado",
+    description: "Piano de cola",
     price: 120000,
     category: "Keyboard",
     condition: "used",
