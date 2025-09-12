@@ -1,8 +1,8 @@
 const bd = require('../models/db');
 const { createError } = require('../utils/error');
 const StatusCodes = require('http-status-codes');
-const createInstrumentSchema = require('../validators/instrument.validators');
 const { number } = require('joi');
+const createInstrumentSchema = require('../validators/create.intrument.shcema');
 
 const getInstruments = (req, resp) => {
     let instruments = bd.instruments;

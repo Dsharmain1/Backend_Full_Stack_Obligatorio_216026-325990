@@ -7,3 +7,5 @@ const createInstrumentSchema = Joi.object({
     condition: Joi.string().valid('new', 'used').required(),
     description: Joi.string().max(500).optional()
 });
+
+module.exports = { createInstrumentSchema };

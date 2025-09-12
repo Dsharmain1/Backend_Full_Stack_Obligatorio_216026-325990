@@ -5,7 +5,7 @@ require('dotenv').config();
 // const { loggerMiddleware } = require('./middlewares/logger.middleware');
 // const { authMiddleware } = require('./middlewares/auth.middleware');
 
-const privateRouter = require('./routes/private.route');
+const instrumentsRouter = require('./routes/Instruments.router');
 // const publicRouter = require('./routes/public.router');
 
 const app = express();
@@ -18,7 +18,7 @@ app.use(morgan("dev"));
 
 // app.use(authMiddleware);
 
-app.use("/v1", privateRouter);
+app.use("/v1", instrumentsRouter);
 
 const port = process.env.PORT;
 app.listen(port, () => {
