@@ -2,8 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 require('dotenv').config();
 
-// const { loggerMiddleware } = require('./middlewares/logger.middleware');
-// const { authMiddleware } = require('./middlewares/auth.middleware');
+const { loggerMiddleware } = require('./middlewares/logger.middleware');
+const { authMiddleware } = require('./middlewares/auth.middleware');
 
 const instrumentsRouter = require('./routes/Instruments.router');
 // const publicRouter = require('./routes/public.router');

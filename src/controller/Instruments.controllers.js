@@ -4,39 +4,39 @@ const StatusCodes = require('http-status-codes');
 const { number } = require('joi');
 const createInstrumentSchema = require('../validators/create.intrument.shcema');
 
-const getInstruments = (req, resp) => {
+const getInstruments = (req, res) => {
     let instruments = bd.instruments;
 
-    resp.status(StatusCodes.OK).json(instruments);
+    res.status(StatusCodes.OK).json(instruments);
 };
 
-const getInstrumentByid=(req, resp) => {
+const getInstrumentByid=(req, res) => {
 
-    const instrumentId=Number(req.param.id);
+    const instrumentId=Number(req.params.id);
 
-    if(isNaN){
-        req.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Id must be a number"));
+    if(isNaN(instrumentId)){
+        res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Id must be a number"));
         return;
     }
     const instrument = bd.findInstrumentById(instrumentId);
 
     if(!instrument){
-        resp.status(StatusCodes.NOT_FOUND).json(createError("not_found", `Instrument whit ID ${instrumentId} not found`))
+        res.status(StatusCodes.NOT_FOUND).json(createError("not_found", `Instrument whit ID ${instrumentId} not found`))
         return;
     }
     
-    resp.status(StatusCodes.OK).json(instrument);
+    res.status(StatusCodes.OK).json(instrument);
 }
 
 const getInstrumentByTitle = (req, res) => {
-    const instrumentTitle = req.param.title;
+    const instrumentTitle = req.params.title;
 
     if(!isNaN(instrumentTitle)){
-        req.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Title must be a text"));
+        res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Title must be a text"));
         return;
     }
 
-    const instrument = getInstrumentByTitle(instrumentTitle);
+    const instrument = bd.findInstrumentByTitle(instrumentTitle);
 
     if(!instrument){
         res.status(StatusCodes.NOT_FOUND).json("not_found", `Instrument with title ${instrumentTitle} not found`);
@@ -47,10 +47,17 @@ const getInstrumentByTitle = (req, res) => {
 }
 
 const deleteInstrument = (req, res) => {
-    const instrumentId = Number(req.param.id);
+    const instrumentId = Number(req.params.id);
 
     if(isNaN(instrumentId)){
         res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Id must be a number"));
+        return;
+    }
+
+    const instrument = bd.findInstrumentById(instrumentId);
+
+    if (instrument.ownerId != req.userId) {
+        res.status(StatusCodes.FORBIDDEN).json(createError("forbidden", "You are not allowed to delete this instrument"));
         return;
     }
 
@@ -62,8 +69,6 @@ const deleteInstrument = (req, res) => {
    }
 
    res.status(StatusCodes.NO_CONTENT).send();
-
-
 }
 
 const createInstrument = (req, res) => {

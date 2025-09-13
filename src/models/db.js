@@ -1,4 +1,48 @@
 let instrumentId = 1;
+let userId = 1;
+
+
+const users = [
+  { 
+    id: userId++, 
+    username: "User1", 
+    email: "maria.rios@demo.mail"
+  },
+  { 
+    id: userId++, 
+    username: "User2", 
+    email: "tomas.suarez@correo.test"
+  },
+  { 
+    id: userId++, 
+    username: "User3", 
+    email: "agustin.perdomo@mail.fake"
+  },
+  { 
+    id: userId++,
+     username: "User4",
+      email: "carla.martinez@ficticio.org"
+  },
+  { 
+    id: userId++, 
+    username: "User5",
+    email: "ricardo.fernandez@correo.demo" 
+  },
+  { 
+    id: userId++, 
+    username: "User6", 
+    email: "sofia.lopez@dominio.prueba"
+  },
+  { id: userId++, 
+    username: "User7", 
+    email: "daniel.pereira@mail.fake" 
+  },
+  {
+    id: userId++, 
+    username: "User8", 
+    email: "valentina.gomez@test.org"
+  }
+];
 
 const instruments = [
   {
@@ -8,7 +52,7 @@ const instruments = [
     price: 15000,
     category: "String",
     condition: "new",
-    owner: "User1",
+    ownerId: 1,
     createdAt: new Date("2025-01-10T10:00:00Z"),
     updatedAt: new Date("2025-01-10T10:00:00Z")
   },
@@ -19,7 +63,7 @@ const instruments = [
     price: 120000,
     category: "Keyboard",
     condition: "used",
-    owner: "User2",
+    ownerId: 2,
     createdAt: new Date("2025-02-15T14:30:00Z"),
     updatedAt: new Date("2025-02-15T14:30:00Z")
   },
@@ -30,9 +74,64 @@ const instruments = [
     price: 20000,
     category: "Percussion",
     condition: "new",
-    owner: "User3",
+    ownerId: 3,
     createdAt: new Date("2025-03-01T09:00:00Z"),
     updatedAt: new Date("2025-03-01T09:00:00Z")
+  },
+  {
+    id: instrumentId++,
+    title: "Violin",
+    description: "Violín clásico de estudio",
+    price: 18000,
+    category: "String",
+    condition: "used",
+    ownerId: 4,
+    createdAt: new Date("2025-03-20T11:00:00Z"),
+    updatedAt: new Date("2025-03-20T11:00:00Z")
+  },
+  {
+    id: instrumentId++,
+    title: "Saxophone",
+    description: "Saxofón alto en perfecto estado",
+    price: 35000,
+    category: "Wind",
+    condition: "new",
+    ownerId: 5,
+    createdAt: new Date("2025-04-05T15:00:00Z"),
+    updatedAt: new Date("2025-04-05T15:00:00Z")
+  },
+  {
+    id: instrumentId++,
+    title: "Trumpet",
+    description: "Trompeta dorada para principiantes",
+    price: 12000,
+    category: "Brass",
+    condition: "used",
+    ownerId: 6,
+    createdAt: new Date("2025-04-15T09:30:00Z"),
+    updatedAt: new Date("2025-04-15T09:30:00Z")
+  },
+  {
+    id: instrumentId++,
+    title: "Flute",
+    description: "Flauta traversa de plata",
+    price: 10000,
+    category: "Wind",
+    condition: "new",
+    ownerId: 7,
+    createdAt: new Date("2025-05-01T08:00:00Z"),
+    updatedAt: new Date("2025-05-01T08:00:00Z")
+  },
+  {
+    id: instrumentId++,
+    title: "Electric Guitar",
+    description: "Guitarra eléctrica color rojo con amplificador incluido",
+    price: 45000,
+    category: "String",
+    condition: "new",
+    ownerId: 8,
+    createdAt: new Date("2025-05-20T19:45:00Z"),
+    updatedAt: new Date("2025-05-20T19:45:00Z")
   }
 ];
 
@@ -76,11 +175,56 @@ const updateInstrument = (id, updatedData) => {
   instruments[indexToUpdate] = updatedInstrument;
   return updatedInstrument;
 }
+
+// ==== Usuarios ====
+
+const findUserById = id => users.find(user => user.id === id);
+
+const findUserByUsername = username => {
+  return users.find(user => user.username.toLowerCase() === username.toLowerCase());
+};
+
+const deleteUserById = id => {
+  const indexToDelete = users.findIndex(user => user.id === id);
+  if (indexToDelete !== -1) {
+    users.splice(indexToDelete, 1);
+    return true;
+  }
+  return false;
+};
+
+const addUser = userData => {
+  const newUser = {
+    id: userId++,
+    ...userData
+  };
+  users.push(newUser);
+  return newUser;
+};
+
+const updateUser = (id, updatedData) => {
+  const indexToUpdate = users.findIndex(user => user.id === id);
+  if (indexToUpdate === -1) {
+    return null;
+  }
+  const updatedUser = {
+    ...users[indexToUpdate],
+    ...updatedData
+  };
+  users[indexToUpdate] = updatedUser;
+  return updatedUser;
+};
+
 module.exports = {
   instruments,
   findInstrumentById,
   findInstrumentByTitle,
   deleteInstrumentById,
   addInstrument,
-  updateInstrument
+  updateInstrument,
+  findUserById,
+  findUserByUsername,
+  deleteUserById,
+  addUser,
+  updateUser  
 };
