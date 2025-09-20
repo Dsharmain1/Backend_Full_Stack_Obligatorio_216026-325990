@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const {createError} = require("../utils/error");
 
 const authMiddleware = (req, res, next) => {
+
     const token = req.headers["authorization"];
 
     if(!token){
@@ -10,7 +11,7 @@ const authMiddleware = (req, res, next) => {
         return;
     }
     try{
-        const verifiedJWT = jwt.verify(token, process.env.JWT_SECRET);
+        const verifiedJWT = jwt.verify(token, process.env.JWT_SECRET_KEY);
         req.userId = verifiedJWT.userId;
         next();
     } catch (error){

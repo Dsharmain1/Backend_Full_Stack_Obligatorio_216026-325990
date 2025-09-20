@@ -1,7 +1,7 @@
 const express = require('express');
 
 const { getInstruments,
-        getInstrumentByid,
+        getInstrumentById,
         getInstrumentByTitle,
         deleteInstrument,
         createInstrument,
@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("/instruments", getInstruments);
 
-router.get("/instruments/id/:id", getInstrumentByid);
+router.get("/instruments/id/:id", getInstrumentById);
 
 router.get("/instruments/title/:title", getInstrumentByTitle);
 

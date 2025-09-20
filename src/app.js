@@ -6,11 +6,11 @@ const { loggerMiddleware } = require('./middlewares/logger.middleware');
 const { authMiddleware } = require('./middlewares/auth.middleware');
 
 const swagger = require('swagger-ui-express');
-const swaggerJsonDoc = require('../swagger.json');
+const swaggerJsonDoc = require('./documentation/swagger.JSON');
 
-const privateRouter = requiere ('./routes/Instruments.router');
-const loginRouter = requiere ('./routes/login.router');
-const signupRouter = requiere ('./routes/signup.router');
+const privateRouter = require ('./routes/Instruments.router');
+const loginRouter = require ('./routes/login.router');
+const signupRouter = require ('./routes/signup.router');
 
 const connectMongoDB = require('./repositories/mongo.client')
 
