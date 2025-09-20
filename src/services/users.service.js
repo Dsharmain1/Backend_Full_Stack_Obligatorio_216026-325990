@@ -7,18 +7,21 @@ const { StatusCodes } = require('http-status-codes');
 
 const doLogin = async ({ username, password }) => {
     const user = await getUserByUserName(username);
-
+    
+    console.log(user);
     if (!user) {
         return null;
     }
-
     const compareResult = await bcrypt.compare(password, user.password);
+
+    console.log(password, user.password, compareResult);
+    
 
     if (!compareResult) {
         return null;
     }
 
-    const token = jwt.sign({ username: user.username, name: user.name, userId: user._id.toString() }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" })
+    const token = jwt.sign({ username: user.username, userId: user._id.toString() }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" })
 
     return { token: token };
 }
