@@ -24,7 +24,7 @@ const doLogin = async ({ username, password }) => {
     return { token: token };
 }
 
-const registerUser = async ({ username, password, name, lastname, email }) => {
+const registerUser = async ({ username, email, password}) => {
     if (await getUserByUserName(username)) {
         let error = new Error("user already exists");
         error.status = "conflict";
@@ -35,6 +35,7 @@ const registerUser = async ({ username, password, name, lastname, email }) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
         username: username,
+        email: email,
         password: hashedPassword,
     });
 

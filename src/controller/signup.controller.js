@@ -21,7 +21,7 @@ const signup = async (req, res) => {
     }
     
     try {
-        const newUser = await usersService.createUser(body);
+        const newUser = await usersService.registerUser(body);
         res.status(StatusCodes.CREATED).json(newUser);
     } catch (error) {
         res.status(error.code || 500).json(createError(error.status, error.message));
