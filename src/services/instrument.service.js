@@ -71,9 +71,9 @@ const updateInstrument = async (instrumentId, userId, updatedData) => {
 
 
 const findInstrumentByIdDB= async (instrumentId, userId) => {
-    let instrument;
+    let foundInstrument;
     try{
-        instrument = await instrument.findInstrumentById(instrumentId);
+        foundInstrument = await instrument.findInstrumentById(instrumentId);
     }catch(e){
         console.log("Error buscando instrumento por ID", e);
         let error = new Error("Error finding instrument by ID");
@@ -81,19 +81,19 @@ const findInstrumentByIdDB= async (instrumentId, userId) => {
         error.code = StatusCodes.INTERNAL_SERVER_ERROR;
         throw error;
     }
-    if(!instrument){
+    if(!foundInstrument){
         let error = new Error(`Instrument was not found`);
         error.status = "not_found";
         error.code = StatusCodes.NOT_FOUND;
         throw error;
     }
-    if (instrument.ownerId.toString() !== userId) {
+    if (foundInstrument.ownerId.toString() !== userId) {
         let error = new Error("You are not allowed to access this instrument");
         error.status = "forbidden";
         error.code = StatusCodes.FORBIDDEN;
         throw error;
     }
-    return instrument;
+    return foundInstrument;
 }
 
 module.exports = {

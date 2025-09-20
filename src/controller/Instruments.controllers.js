@@ -3,141 +3,107 @@ const { createError } = require('../utils/error');
 const StatusCodes = require('http-status-codes');
 const { number } = require('joi');
 const {createInstrumentSchema} = require('../validators/create.instrument.schema');
+const instrumentService = require('../services/instrument.service');
 
-const getInstruments = (req, res) => {
-      let instruments = bd.instruments;
-
-      res.status(StatusCodes.OK).json(instruments);
+const getInstruments = async (req, res) => {
+      try{
+        let instruments = await instrumentService.getInstrumentByUserId(req.userId);
+        res.status(StatusCodes.OK).json(instruments);
+      }catch(error){
+        res.status(error.code || 500).json(createError(error.status, error.message));
+      }
 };
 
-const getInstrumentByid=(req, res) => {
+const getInstrumentById = async (req, res) => {
+    const instrumentId = req.params.id;
 
-    const instrumentId=Number(req.params.id);
-
-    if(isNaN(instrumentId)){
-        res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Id must be a number"));
-        return;
-    }
-    const instrument = bd.findInstrumentById(instrumentId);
-
-    if(!instrument){
-        res.status(StatusCodes.NOT_FOUND).json(createError("not_found", `Instrument whit ID ${instrumentId} not found`))
-        return;
-    }
-    
-    res.status(StatusCodes.OK).json(instrument);
+    try{
+      const instrument = await instrumentService.findInstrumentById(instrumentId, req.userId);
+      res.status(StatusCodes.OK).json(instrument);
+    }catch(error){
+      res.status(error.code || 500).json(createError(error.status, error.message));
+    }  
 }
 
-const getInstrumentByTitle = (req, res) => {
+const getInstrumentByTitle = async (req, res) => {
     const instrumentTitle = req.params.title;
 
-    if(!isNaN(instrumentTitle)){
-        res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Title must be a text"));
-        return;
+     try{
+        const instrument = await instrumentService.findInstrumentByTitle(instrumentTitle, req.userId);
+        res.status(StatusCodes.OK).json(instrument);
+    }catch(error){
+        res.status(error.code || 500).json(createError(error.status, error.message));
+    }
     }
 
-    const instrument = bd.findInstrumentByTitle(instrumentTitle);
+const deleteInstrument = async(req, res) => {
+    const instrumentId = req.params.id;
 
-    if(!instrument){
-        res.status(StatusCodes.NOT_FOUND).json("not_found", `Instrument with title ${instrumentTitle} not found`);
-        return;
+    try{
+        await instrumentService.deleteInstrument(instrumentId, req.userId);
+        res.status(StatusCodes.NO_CONTENT).send();
+    }catch(error){
+        res.status(error.code || 500).json(createError(error.status, error.message));
     }
-
-    res.status(StatusCodes.OK).json(instrument);
+ 
 }
 
-const deleteInstrument = (req, res) => {
-    const instrumentId = Number(req.params.id);
-
-    if(isNaN(instrumentId)){
-        res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Id must be a number"));
-        return;
-    }
-
-    const instrument = bd.findInstrumentById(instrumentId);
-
-    if (instrument.ownerId != req.userId) {
-        res.status(StatusCodes.FORBIDDEN).json(createError("forbidden", "You are not allowed to delete this instrument"));
-        return;
-    }
-
-   const deleted = bd.deleteInstrumentById(instrumentId);
-
-   if(!deleted){
-    res.status(StatusCodes.NOT_FOUND).json(createError("not_found", `Instrument with ID ${instrumentId} not found`));
-    return;
-   }
-
-   res.status(StatusCodes.NO_CONTENT).send();
-}
-
-const createInstrument = (req, res) => {
+const createInstrument = async (req, res) => {
   const { body } = req;
-  
+
   if (!body) {
-    res
-      .status(StatusCodes.BAD_REQUEST)
-      .json(createError("bad_request", "Invalid body"));
+    res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Invalid body"));
     return;
   }
 
   const { error } = createInstrumentSchema.validate(body);
 
   if (error) {
-    const errorMessage = error.details[0].message; 
-    res
-      .status(StatusCodes.BAD_REQUEST)
-      .json(createError("bad_request", errorMessage)); 
+    const errorMessage = error.details[0].message;
+    res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", errorMessage));
     return;
   }
 
   const { title } = body;
 
-  if (bd.findInstrumentByTitle(title)) {
-    res
-      .status(StatusCodes.CONFLICT) 
-      .json(createError("conflict", `Instrument with title '${title}' already exists`));
-    return;
+  try {
+    const newInstrument = await instrumentService.createInstrument(
+      title,
+      body.description,
+      body.price,
+      body.category,
+      body.condition,
+      req.userId
+    );
+    res.status(StatusCodes.CREATED).json(newInstrument);
+  } catch (error) {
+    res.status(error.code || 500).json(createError(error.status, error.message));
   }
-  
-  const newInstrument = bd.addInstrument(body);
-  res.status(StatusCodes.CREATED).json(newInstrument); 
 };
 
 
-const updateInstrument = (req, res) => {
-  const instrumentId = Number(req.params.id);
 
-  if (isNaN(instrumentId)) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json(createError("bad_request", "Id must be a number"));
+const updateInstrument = async (req, res) => {
+  const instrumentId = req.params.id;
+
+  const { body } = req;
+
+  if (!body) {
+    res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Invalid body"));
+    return;
   }
-
-  const { title, price, description, category, condition } = req.body;
-
-  if (!title && !price && !description && !category && !condition) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json(createError("bad_request", "At least one field must be provided to update"));
+  try {
+    const updatedInstrument = await instrumentService.updateInstrument(instrumentId, req.userId, body);
+    res.status(StatusCodes.OK).json(updatedInstrument);
+  } catch (error) {
+    res.status(error.code || 500).json(createError(error.status, error.message));
   }
-
-  // pasar req.body completo a bd.updateInstrument
-  const updatedInstrument = bd.updateInstrument(instrumentId, req.body);
-
-  if (!updatedInstrument) {
-    return res
-      .status(StatusCodes.NOT_FOUND)
-      .json(createError("not_found", `Instrument with ID ${instrumentId} not found`));
-  }
-
-  res.status(StatusCodes.OK).json(updatedInstrument);
 };
 
 
 module.exports = {
     getInstruments,
-    getInstrumentByid,
+    getInstrumentById,
     getInstrumentByTitle,
     deleteInstrument,
     createInstrument,

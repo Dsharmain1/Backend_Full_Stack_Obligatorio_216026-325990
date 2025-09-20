@@ -5,9 +5,12 @@ require('dotenv').config();
 const { loggerMiddleware } = require('./middlewares/logger.middleware');
 const { authMiddleware } = require('./middlewares/auth.middleware');
 
+const swagger = require('swagger-ui-express');
+const swaggerJsonDoc = require('../swagger.json');
 
-const loginRouter = require('./routes/login.router');
-const instrumentsRouter = require('./routes/Instruments.router');
+const privateRouter = requiere ('./routes/Instruments.router');
+const loginRouter = requiere ('./routes/login.router');
+const signupRouter = requiere ('./routes/signup.router');
 
 const connectMongoDB = require('./repositories/mongo.client')
 
@@ -17,10 +20,17 @@ app.use(express.json());
 app.use(loggerMiddleware);
 app.use(morgan("dev"));
 
+//ENDPOINTS PUBLICOS SIN TOKEN
 app.use("/public/v1", loginRouter)
+app.use("/public/v1", signupRouter)
+app.use("/public/api-docs", swagger.serve, swagger.setup(swaggerJsonDoc));
 
+
+//ENDPOINTS PRIVADOS CON TOKEN
 app.use(authMiddleware);
-app.use("/v1", instrumentsRouter);
+
+app.use("/v1", privateRouter);
+
 
 (async () => {
     try {
