@@ -5,9 +5,9 @@ const { number } = require('joi');
 const {createInstrumentSchema} = require('../validators/create.instrument.schema');
 
 const getInstruments = (req, res) => {
-    let instruments = bd.instruments;
+      let instruments = bd.instruments;
 
-    res.status(StatusCodes.OK).json(instruments);
+      res.status(StatusCodes.OK).json(instruments);
 };
 
 const getInstrumentByid=(req, res) => {

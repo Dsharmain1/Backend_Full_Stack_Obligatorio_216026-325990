@@ -8,13 +8,11 @@ const { StatusCodes } = require('http-status-codes');
 const doLogin = async ({ username, password }) => {
     const user = await getUserByUserName(username);
     
-    console.log(user);
+    
     if (!user) {
         return null;
     }
     const compareResult = await bcrypt.compare(password, user.password);
-
-    console.log(password, user.password, compareResult);
     
 
     if (!compareResult) {
