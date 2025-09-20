@@ -1,4 +1,4 @@
-const { createError } = require('../utils/errors');
+const { createError } = require('../utils/error');
 const StatusCodes = require('http-status-codes');
 const loginSchema = require('../validators/login.schema');
 const jwt = require('jsonwebtoken');

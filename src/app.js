@@ -5,22 +5,34 @@ require('dotenv').config();
 const { loggerMiddleware } = require('./middlewares/logger.middleware');
 const { authMiddleware } = require('./middlewares/auth.middleware');
 
+
+const loginRouter = require('./routes/login.router');
 const instrumentsRouter = require('./routes/Instruments.router');
-// const publicRouter = require('./routes/public.router');
+
+const connectMongoDB = require('./repositories/mongo.client')
 
 const app = express();
 
 app.use(express.json());
-// app.use(loggerMiddleware);
+app.use(loggerMiddleware);
 app.use(morgan("dev"));
 
-// app.use("/public", publicRouter);
+app.use("/public/v1", loginRouter)
 
-// app.use(authMiddleware);
-
+app.use(authMiddleware);
 app.use("/v1", instrumentsRouter);
 
-const port = process.env.PORT;
-app.listen(port, () => {
-    console.log("App started and listening in port " + port);
-})
+(async () => {
+    try {
+        await connectMongoDB();
+        console.log("conexión mongoDB ok")
+
+        const port = process.env.PORT;
+        app.listen(port, () => {
+            console.log("App started and listening in port " + port);
+        })
+    } catch (error) {
+        console.log("Error conectando con mongoDB", error);
+        process.exit(1);
+    }
+})();

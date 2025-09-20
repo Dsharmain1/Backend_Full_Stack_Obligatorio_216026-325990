@@ -6,41 +6,49 @@ const users = [
   { 
     id: userId++, 
     username: "User1", 
-    email: "maria.rios@demo.mail"
+    email: "maria.rios@demo.mail",
+    password: "password1"
   },
   { 
     id: userId++, 
     username: "User2", 
-    email: "tomas.suarez@correo.test"
+    email: "tomas.suarez@correo.test",
+    password: "password2"
   },
   { 
     id: userId++, 
     username: "User3", 
-    email: "agustin.perdomo@mail.fake"
+    email: "agustin.perdomo@mail.fake",
+    password: "password3"
   },
   { 
     id: userId++,
      username: "User4",
-      email: "carla.martinez@ficticio.org"
+      email: "carla.martinez@ficticio.org",
+      password: "password4"
   },
   { 
     id: userId++, 
     username: "User5",
-    email: "ricardo.fernandez@correo.demo" 
+    email: "ricardo.fernandez@correo.demo" ,
+    password: "password5"
   },
   { 
     id: userId++, 
     username: "User6", 
-    email: "sofia.lopez@dominio.prueba"
+    email: "sofia.lopez@dominio.prueba",
+    password: "password6"
   },
   { id: userId++, 
     username: "User7", 
-    email: "daniel.pereira@mail.fake" 
+    email: "daniel.pereira@mail.fake",
+    password: "password7"
   },
   {
     id: userId++, 
     username: "User8", 
-    email: "valentina.gomez@test.org"
+    email: "valentina.gomez@test.org",
+    password: "password8"
   }
 ];
 
