@@ -2,7 +2,7 @@ const bd = require('../models/db');
 const { createError } = require('../utils/error');
 const StatusCodes = require('http-status-codes');
 const { number } = require('joi');
-const createInstrumentSchema = require('../validators/create.intrument.shcema');
+const {createInstrumentSchema} = require('../validators/create.instrument.schema');
 
 const getInstruments = (req, res) => {
     let instruments = bd.instruments;
@@ -72,56 +72,67 @@ const deleteInstrument = (req, res) => {
 }
 
 const createInstrument = (req, res) => {
-    const { body } = req;
-    
-    if(!body){
-        res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "invalid body"));
-        return;
-    }
+  const { body } = req;
+  
+  if (!body) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createError("bad_request", "Invalid body"));
+    return;
+  }
 
-    const { error } = createInstrumentSchema.validate(body);
+  const { error } = createInstrumentSchema.validate(body);
 
-    if(error){
-        const errorMessage = error.detail[0].message;
-        res.status(StatusCodes.BAD_REQUEST).json(createError("bad_reques", errorMessage));
-        return;
-    }
+  if (error) {
+    const errorMessage = error.details[0].message; 
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createError("bad_request", errorMessage)); 
+    return;
+  }
 
-    const {title, category } = body;
+  const { title } = body;
 
-    if(bd.findInstrumentByTitle(title)){
-        res.status(StatusCodes.CONFLICT).json(createError("consflict",`Instrument with title ${title} already exists`));
-        return;
-    }
-    
-    const newInstrument = bd.addInstrument(body);
-    res.status(StatusCodes.OK).json(newInstrument);
-}
+  if (bd.findInstrumentByTitle(title)) {
+    res
+      .status(StatusCodes.CONFLICT) 
+      .json(createError("conflict", `Instrument with title '${title}' already exists`));
+    return;
+  }
+  
+  const newInstrument = bd.addInstrument(body);
+  res.status(StatusCodes.CREATED).json(newInstrument); 
+};
+
 
 const updateInstrument = (req, res) => {
-    const instrumentId = Number(req.param.id);
+  const instrumentId = Number(req.params.id);
 
-     if(isNaN(instrumentId)){
-        res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Id must be a number"));
-        return;
-    }
+  if (isNaN(instrumentId)) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createError("bad_request", "Id must be a number"));
+  }
 
-    const {title, price, description, category, condition} = req.body;
+  const { title, price, description, category, condition } = req.body;
 
-    if(!title && !price && !description && !category && !condition){
-        res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "At least one field must be provided to update"));
-        return;
-    }
+  if (!title && !price && !description && !category && !condition) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json(createError("bad_request", "At least one field must be provided to update"));
+  }
 
-    const updatedInstrument = bd.updateInstrument(instrumentId, title, price, description, category, condition);
+  // pasar req.body completo a bd.updateInstrument
+  const updatedInstrument = bd.updateInstrument(instrumentId, req.body);
 
-    if(!updateInstrument){
-        res.status(StatusCodes.NOT_FOUND).json(createError("not_found", `Instrument with ID ${instrumentId} not found`));
-        return;
-    }
+  if (!updatedInstrument) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json(createError("not_found", `Instrument with ID ${instrumentId} not found`));
+  }
 
-    res.status(StatusCodes.OK).json(updatedInstrument);
-}
+  res.status(StatusCodes.OK).json(updatedInstrument);
+};
 
 
 module.exports = {
