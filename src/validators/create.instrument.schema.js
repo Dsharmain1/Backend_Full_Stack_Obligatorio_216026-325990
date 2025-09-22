@@ -8,4 +8,5 @@ const createInstrumentSchema = Joi.object({
     description: Joi.string().max(500).optional()
 });
 
-module.exports = { createInstrumentSchema };
+module.exports = { createInstrumentSchema }
+;

@@ -24,7 +24,7 @@ const doLogin = async ({ username, password }) => {
     return { token: token };
 }
 
-const registerUser = async ({ username, email, password}) => {
+const registerUser = async ({ username, email, password, firstName, lastName}) => {
     if (await getUserByUserName(username)) {
         let error = new Error("user already exists");
         error.status = "conflict";
@@ -37,6 +37,11 @@ const registerUser = async ({ username, email, password}) => {
         username: username,
         email: email,
         password: hashedPassword,
+        firstName: firstName,
+        lastName: lastName,
+        plan: 'plus',
+        instrumentsCount: 0,
+        createAt: new Date()
     });
 
     try {
@@ -52,9 +57,22 @@ const registerUser = async ({ username, email, password}) => {
     }
 }
 
+const incrementInstrumentCount = async (userId) => {
+    const user = await User.findById(userId);
+    if (!user) {
+        let error = new Error("user not found");
+        error.status = "not_found";
+        error.code = StatusCodes.NOT_FOUND;
+        throw error;
+    }
+    user.instrumentsCount += 1; 
+    await user.save();
+}
+
 const getUserByUserName = async username => await User.findOne({ username: username })
 
 module.exports = {
     doLogin,
-    registerUser
+    registerUser,
+    incrementInstrumentCount,
 };

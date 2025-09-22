@@ -4,6 +4,7 @@ const StatusCodes = require('http-status-codes');
 const { number } = require('joi');
 const {createInstrumentSchema} = require('../validators/create.instrument.schema');
 const instrumentService = require('../services/instrument.service');
+const userService = require('../services/users.service');
 
 const getInstruments = async (req, res) => {
       try{
@@ -49,6 +50,7 @@ const deleteInstrument = async(req, res) => {
 }
 
 const createInstrument = async (req, res) => {
+  console.log(req.userId);
   const { body } = req;
 
   if (!body) {
@@ -75,6 +77,9 @@ const createInstrument = async (req, res) => {
       body.condition,
       req.userId
     );
+
+    await userService.incrementInstrumentCount(req.userId);
+
     res.status(StatusCodes.CREATED).json(newInstrument);
   } catch (error) {
     res.status(error.code || 500).json(createError(error.status, error.message));

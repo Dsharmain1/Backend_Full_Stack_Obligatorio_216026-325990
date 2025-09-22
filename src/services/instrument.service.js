@@ -20,7 +20,6 @@ const getInstrumentByUserId = async userId => {
         });
         return instrumentResponse;
     }catch(e){
-        console.log("rror obtniendo los instrumentos del usuario", e);
         let error = new Error("Error getting instruments for user");
         error.status = "internal_server_error";
         error.code = StatusCodes.INTERNAL_SERVER_ERROR;
@@ -60,7 +59,7 @@ const createInstrument = async (title,description,price,category,condition,owner
 
 const updateInstrument = async (instrumentId, userId, updatedData) => {
     try{
-        const instrumentToUpdate = await instrument.findInstrumentById(instrumentId,userId);
+        const instrumentToUpdate = await instrument.findById(instrumentId,userId);
         Object.assign(instrumentToUpdate, updatedData);
         const savedInstrument = await instrumentToUpdate.save();
         return buildInstrumentDTOResponse(savedInstrument);
@@ -73,7 +72,7 @@ const updateInstrument = async (instrumentId, userId, updatedData) => {
 const findInstrumentByIdDB= async (instrumentId, userId) => {
     let foundInstrument;
     try{
-        foundInstrument = await instrument.findInstrumentById(instrumentId);
+        foundInstrument = await instrument.findById(instrumentId);
     }catch(e){
         console.log("Error buscando instrumento por ID", e);
         let error = new Error("Error finding instrument by ID");
