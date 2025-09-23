@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const buildUserDTOResponse = require('../dtos/user.response.dto');
 const { StatusCodes } = require('http-status-codes');
+const { object } = require('joi');
 
 
 const doLogin = async ({ username, password }) => {
@@ -58,6 +59,31 @@ const registerUser = async ({ username, email, password, firstName, lastName}) =
     }
 }
 
+const updateProfile = async (userId, { firstName, lastName, email, password}) => {
+    
+    try{
+        const user = await User.findById(userId);
+        console.log(user);
+        Object.assign(user, { firstName, lastName, email , password: password ? await bcrypt.hash(password, 10) : user.password});
+        const savedUser = await user.save();
+        return buildUserDTOResponse(savedUser);
+
+    }catch(e){
+        throw error;
+    }
+}
+
+const changePlan = async (userId, newPlan) => {
+    try{
+        const user = await User.findById(userId);
+        user.plan = newPlan;
+        const savedUser = await user.save();
+        return buildUserDTOResponse(savedUser);
+    }catch(e){
+        throw error;
+    }       
+}
+
 const incrementInstrumentCount = async (userId) => {
     const user = await User.findById(userId);
     console.log(user);
@@ -82,7 +108,7 @@ const decrementInstrumentCount = async (userId) => {
     if(user.instrumentsCount > 0){
         user.instrumentsCount -= 1;
     }
-    
+
     await user.save();
 
 }
@@ -93,5 +119,7 @@ module.exports = {
     doLogin,
     registerUser,
     incrementInstrumentCount,
-    decrementInstrumentCount
+    decrementInstrumentCount,
+    updateProfile,
+    changePlan,
 };

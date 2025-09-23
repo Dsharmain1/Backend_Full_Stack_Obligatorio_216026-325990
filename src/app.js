@@ -11,6 +11,7 @@ const swaggerJsonDoc = require('./documentation/swagger.JSON');
 const privateRouter = require ('./routes/Instruments.router');
 const loginRouter = require ('./routes/login.router');
 const signupRouter = require ('./routes/signup.router');
+const userRouter = require ('./routes/users.router');
 
 const connectMongoDB = require('./repositories/mongo.client')
 
@@ -28,8 +29,8 @@ app.use("/public/api-docs", swagger.serve, swagger.setup(swaggerJsonDoc));
 
 //ENDPOINTS PRIVADOS CON TOKEN
 app.use(authMiddleware);
-
 app.use("/v1", privateRouter);
+app.use("/v1", userRouter);
 
 
 (async () => {

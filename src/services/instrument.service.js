@@ -1,6 +1,7 @@
 const {StatusCodes} = require('http-status-codes');
 const buildInstrumentDTOResponse = require('../dtos/instrument.response.dto');
 const instrument = require('../models/instrument.model');
+const { find } = require('../models/user.model');
 
 
 const findInstrumentById = async (instrumentId, userId) => {
@@ -69,6 +70,24 @@ const updateInstrument = async (instrumentId, userId, updatedData) => {
     }
 }
 
+const findInstrumentByTitle = async (title, userId) =>
+{
+    try{
+       const instrumentFound = await instrument.findOne({
+        title: { $regex: new RegExp(`^${title}$`, 'i') },
+        ownerId: userId});
+        console.log(instrumentFound);
+        return buildInstrumentDTOResponse(instrumentFound);
+    }
+    catch(e){
+        let error = new Error("Error finding instrument by title");
+        error.status = "internal_server_error";
+        error.code = StatusCodes.INTERNAL_SERVER_ERROR;
+        throw error;
+    }
+        
+}
+
 
 const findInstrumentByIdDB= async (instrumentId, userId) => {
     let foundInstrument;
@@ -101,5 +120,6 @@ module.exports = {
     getInstrumentByUserId,
     deleteInstrument,
     createInstrument,
-    updateInstrument
+    updateInstrument,
+    findInstrumentByTitle
 };
