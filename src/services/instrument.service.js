@@ -28,10 +28,11 @@ const getInstrumentByUserId = async userId => {
 }
 
 const deleteInstrument = async (instrumentId, userId) => {
-    try{
-        const instrument = await instrument.findInstrumentById(instrumentId,userId);
-        await instrument.deleteOne();
-    }catch (error){
+    try {
+        const instrumentToDelete = await findInstrumentByIdDB(instrumentId, userId);
+        console.log(instrumentToDelete);
+       await instrument.deleteOne({ _id: instrumentId });
+    } catch (error) {
         throw error;
     }
 }

@@ -42,6 +42,7 @@ const deleteInstrument = async(req, res) => {
 
     try{
         await instrumentService.deleteInstrument(instrumentId, req.userId);
+        await userService.decrementInstrumentCount(req.userId);
         res.status(StatusCodes.NO_CONTENT).send();
     }catch(error){
         res.status(error.code || 500).json(createError(error.status, error.message));
