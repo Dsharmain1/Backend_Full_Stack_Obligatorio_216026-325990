@@ -85,14 +85,23 @@ const changePlan = async (userId, newPlan) => {
 }
 
 const incrementInstrumentCount = async (userId) => {
+    
     const user = await User.findById(userId);
-    console.log(user);
+  
     if (!user) {
         let error = new Error("user not found");
         error.status = "not_found";
         error.code = StatusCodes.NOT_FOUND;
         throw error;
     }
+
+    if(user.plan == "plus" && user.instrumentsCount >= 10){
+        let error = new Error("instrument limit reached for your plan");
+        error.status = "forbidden";
+        error.code = StatusCodes.FORBIDDEN;
+        throw error;
+    }
+    
     user.instrumentsCount += 1; 
     await user.save();
 }

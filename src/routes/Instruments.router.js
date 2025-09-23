@@ -5,7 +5,7 @@ const { getInstruments,
         getInstrumentByTitle,
         deleteInstrument,
         createInstrument,
-        updateInstrument
+        updateInstrument,
  } = require('../controller/Instruments.controllers');
 
 const router = express.Router();
@@ -21,5 +21,6 @@ router.delete("/instruments/:id", deleteInstrument);
 router.post("/instruments", createInstrument);
 
 router.put("/instruments/:id", updateInstrument);
+
 
 module.exports = router;

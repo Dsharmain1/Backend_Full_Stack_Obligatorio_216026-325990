@@ -6,6 +6,28 @@ const {createInstrumentSchema} = require('../validators/create.instrument.schema
 const instrumentService = require('../services/instrument.service');
 const userService = require('../services/users.service');
 
+const publicGetInstrumentById = async (req, res) => {
+
+   const instrumentId = req.params.id;
+
+    try{
+      const instrument = await instrumentService.getInstrumentById(instrumentId);
+      res.status(StatusCodes.OK).json(instrument);
+    }catch(error){
+      res.status(error.code || 500).json(createError(error.status, error.message));
+    }  
+
+}
+
+const getAllInstruments = async (req, res) => {
+    try{
+        const instruments = await instrumentService.getAllInstruments();
+        res.status(StatusCodes.OK).json(instruments);
+    }catch(e){  
+        res.status(e.code || 500).json(createError(e.status, e.message));
+    }
+}
+
 const getInstruments = async (req, res) => {
       try{
         let instruments = await instrumentService.getInstrumentByUserId(req.userId);
@@ -13,7 +35,7 @@ const getInstruments = async (req, res) => {
       }catch(error){
         res.status(error.code || 500).json(createError(error.status, error.message));
       }
-};
+}
 
 const getInstrumentById = async (req, res) => {
     const instrumentId = req.params.id;
@@ -50,7 +72,7 @@ const deleteInstrument = async(req, res) => {
 }
 
 const createInstrument = async (req, res) => {
-  console.log(req.userId);
+
   const { body } = req;
 
   if (!body) {
@@ -112,5 +134,7 @@ module.exports = {
     getInstrumentByTitle,
     deleteInstrument,
     createInstrument,
-    updateInstrument
+    updateInstrument,
+    getAllInstruments,
+    publicGetInstrumentById
 };

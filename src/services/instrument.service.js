@@ -4,10 +4,47 @@ const instrument = require('../models/instrument.model');
 const { find } = require('../models/user.model');
 
 
+
+const getAllInstruments = async() => {
+    try{
+        const instruments = await instrument.find()
+
+        return instruments.map(buildInstrumentDTOResponse);
+
+    }catch(e){
+        let error = new Error("Error getting all instruments");
+        error.status = "internal_server_error";
+        error.code = StatusCodes.INTERNAL_SERVER_ERROR;
+        throw error;
+    }
+}
+
+const getInstrumentById = async (instrumentId) => {
+
+    let foundInstrument;
+    try{
+        foundInstrument = await instrument.findById(instrumentId);
+    }catch(e){
+        console.log("Error buscando instrumento por ID", e);
+        let error = new Error("Error finding instrument by ID");
+        error.status = "internal_server_error";
+        error.code = StatusCodes.INTERNAL_SERVER_ERROR;
+        throw error;
+    }
+    if(!foundInstrument){
+        let error = new Error(`Instrument was not found`);
+        error.status = "not_found";
+        error.code = StatusCodes.NOT_FOUND;
+        throw error;
+    }
+    
+    return buildInstrumentDTOResponse(foundInstrument);
+}
+
 const findInstrumentById = async (instrumentId, userId) => {
     try{
         const instrument = await findInstrumentByIdDB(instrumentId, userId);
-        return buildInstrumentDTOResponse(instrument);
+        return build(instrument);
     }catch(error){
         throw error;
     }
@@ -121,5 +158,7 @@ module.exports = {
     deleteInstrument,
     createInstrument,
     updateInstrument,
-    findInstrumentByTitle
+    findInstrumentByTitle,
+    getAllInstruments,
+    getInstrumentById
 };
