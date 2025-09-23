@@ -28,14 +28,13 @@ const getInstrumentById = async (req, res) => {
 
 const getInstrumentByTitle = async (req, res) => {
     const instrumentTitle = req.params.title;
-
-     try{
+    try{
         const instrument = await instrumentService.findInstrumentByTitle(instrumentTitle, req.userId);
         res.status(StatusCodes.OK).json(instrument);
     }catch(error){
         res.status(error.code || 500).json(createError(error.status, error.message));
     }
-    }
+}
 
 const deleteInstrument = async(req, res) => {
     const instrumentId = req.params.id;
