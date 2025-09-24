@@ -7,7 +7,6 @@ const userStatistics = async (UserId) => {
     let aux = 0;
     try {
         user = await User.findById(UserId);
-        console.log("User in service:", user);
 
         const count = user.instrumentsCount;
 

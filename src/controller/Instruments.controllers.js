@@ -20,13 +20,14 @@ const publicGetInstrumentById = async (req, res) => {
 }
 
 const getAllInstruments = async (req, res) => {
-    try{
-        const instruments = await instrumentService.getAllInstruments();
-        res.status(StatusCodes.OK).json(instruments);
-    }catch(e){  
-        res.status(e.code || 500).json(createError(e.status, e.message));
-    }
-}
+  const { from, to } = req.query;
+  try {
+    const instruments = await instrumentService.getAllInstruments(from, to);
+    res.status(200).json(instruments);
+  } catch (e) {
+    res.status(500).json({ error: "Error getting instruments" });
+  }
+};
 
 const getInstruments = async (req, res) => {
       try{
