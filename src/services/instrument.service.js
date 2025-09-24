@@ -15,7 +15,6 @@ const getAllInstruments = async (from, to) => {
         toDate.setHours(23, 59, 59, 999);
         filter.createdAt.$lte = toDate;
     }
-    
     if (Object.keys(filter.createdAt).length === 0) delete filter.createdAt;
   }
 
