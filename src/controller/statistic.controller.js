@@ -4,8 +4,7 @@ const StatusCodes = require('http-status-codes');
 const statisticsService = require('../services/statistics.service');
 
 const userStatistics = async (req, res) => {
-    const {userId} = req;
-    // console.log("UserId:", userId); 
+    const {userId} = req; 
     if (!userId) {
         res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Invalid userId"));
         return;
