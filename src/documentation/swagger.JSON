@@ -25,13 +25,27 @@
         "properties": {
           "_id": { "type": "string", "example": "68cf150b3b02a827899c1a3b" },
           "title": { "type": "string", "example": "Flute" },
-          "description": { "type": "string", "example": "Flauta traversa de plata" },
+          "description": {
+            "type": "string",
+            "example": "Flauta traversa de plata"
+          },
           "price": { "type": "number", "example": 10000 },
           "category": { "type": "string", "example": "Wind" },
           "condition": { "type": "string", "example": "new" },
-          "ownerId": { "type": "string", "example": "68ced23b3b02a827899c1a1f" },
-          "createdAt": { "type": "string", "format": "date-time", "example": "2025-05-01T08:00:00.000+00:00" },
-          "updatedAt": { "type": "string", "format": "date-time", "example": "2025-05-01T08:00:00.000+00:00" }
+          "ownerId": {
+            "type": "string",
+            "example": "68ced23b3b02a827899c1a1f"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-05-01T08:00:00.000+00:00"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-05-01T08:00:00.000+00:00"
+          }
         }
       },
       "User": {
@@ -40,12 +54,19 @@
           "_id": { "type": "string", "example": "68ced23b3b02a827899c1a18" },
           "username": { "type": "string", "example": "User1" },
           "email": { "type": "string", "example": "maria.rios@demo.mail" },
-          "password": { "type": "string", "example": "$2b$10$zXoYbG/ZnX3mg5p4Z30w1.4ihzkdPJfStCsuuqILENKVNXX2V6vbC" },
+          "password": {
+            "type": "string",
+            "example": "$2b$10$zXoYbG/ZnX3mg5p4Z30w1.4ihzkdPJfStCsuuqILENKVNXX2V6vbC"
+          },
           "firstName": { "type": "string", "example": "Nombre" },
           "lastName": { "type": "string", "example": "Apellido" },
           "plan": { "type": "string", "example": "plus" },
           "instrumentsCount": { "type": "integer", "example": 0 },
-          "createdAt": { "type": "string", "format": "date-time", "example": "2025-09-22T00:00:00.000+00:00" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-09-22T00:00:00.000+00:00"
+          },
           "__v": { "type": "integer", "example": 0 }
         }
       },
@@ -55,7 +76,7 @@
           "username": { "type": "string", "example": "User1" },
           "password": { "type": "string", "example": "mypassword" }
         },
-        "required": ["username","password"]
+        "required": ["username", "password"]
       },
       "LoginResponse": {
         "type": "object",
@@ -66,11 +87,13 @@
       "SignupRequest": {
         "type": "object",
         "properties": {
-          "username": { "type": "string", "example": "User1" },
-          "email": { "type": "string", "example": "maria.rios@demo.mail" },
-          "password": { "type": "string", "example": "mypassword" }
+          "username": { "type": "string", "example": "nuevo3" },
+          "email": { "type": "string", "example": "nuevo3@gmail.com" },
+          "password": { "type": "string", "example": "password8" },
+          "firstName": { "type": "string", "example": "Matias" },
+          "lastName": { "type": "string", "example": "Trolin" }
         },
-        "required": ["username","email","password"]
+        "required": ["username", "email", "password", "firstName", "lastName"]
       },
       "UpdateProfileRequest": {
         "type": "object",
@@ -106,136 +129,394 @@
   "paths": {
     "/public/v1/login": {
       "post": {
-        "tags":["Usuarios - Públicos"],
-        "summary":"Login de usuario",
-        "requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/LoginRequest"}}}},
-        "responses":{
-          "200":{"description":"JWT de acceso","content":{"application/json":{"schema":{"$ref":"#/components/schemas/LoginResponse"}}}},
-          "401":{"description":"Credenciales inválidas","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Usuarios - Públicos"],
+        "summary": "Login de usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JWT de acceso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       }
     },
     "/public/v1/signup": {
       "post": {
-        "tags":["Usuarios - Públicos"],
-        "summary":"Registro de usuario",
-        "requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/SignupRequest"}}}},
-        "responses":{
-          "201":{"description":"Usuario creado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}},
-          "400":{"description":"Error de validación","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Usuarios - Públicos"],
+        "summary": "Registro de usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SignupRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario creado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validación",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       }
     },
     "/public/v1/instruments": {
       "get": {
-        "tags":["Instrumentos - Públicos"],
-        "summary":"Obtener todos los instrumentos públicos",
-        "responses":{
-          "200":{"description":"Lista de instrumentos públicos","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Instrument"}}}}},
-          "400":{"description":"Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Instrumentos - Públicos"],
+        "summary": "Obtener todos los instrumentos públicos",
+        "responses": {
+          "200": {
+            "description": "Lista de instrumentos públicos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Instrument" }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       }
     },
     "/public/v1/instruments/id/{id}": {
       "get": {
-        "tags":["Instrumentos - Públicos"],
-        "summary":"Obtener instrumento público por ID",
-        "parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"}}],
-        "responses":{
-          "200":{"description":"Instrumento encontrado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Instrument"}}}},
-          "404":{"description":"No encontrado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Instrumentos - Públicos"],
+        "summary": "Obtener instrumento público por ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instrumento encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Instrument" }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       }
     },
     "/v1/instruments": {
       "get": {
-        "tags":["Instrumentos - Privados"],
-        "summary":"Obtener todos los instrumentos privados",
-        "security":[{"jwtAuth":[]}],
-        "responses":{
-          "200":{"description":"Lista de instrumentos privados","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Instrument"}}}}},
-          "401":{"description":"No autorizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Instrumentos - Privados"],
+        "summary": "Obtener todos los instrumentos privados",
+        "security": [{ "jwtAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Lista de instrumentos privados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Instrument" }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       },
       "post": {
-        "tags":["Instrumentos - Privados"],
-        "summary":"Crear un instrumento",
-        "security":[{"jwtAuth":[]}],
-        "requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Instrument"}}}},
-        "responses":{
-          "201":{"description":"Instrumento creado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Instrument"}}}},
-          "401":{"description":"No autorizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Instrumentos - Privados"],
+        "summary": "Crear un instrumento",
+        "security": [{ "jwtAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Instrument" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Instrumento creado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Instrument" }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       }
     },
     "/v1/instruments/id/{id}": {
       "get": {
-        "tags":["Instrumentos - Privados"],
-        "summary":"Obtener instrumento privado por ID",
-        "security":[{"jwtAuth":[]}],
-        "parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"}}],
-        "responses":{
-          "200":{"description":"Instrumento encontrado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Instrument"}}}},
-          "401":{"description":"No autorizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}},
-          "404":{"description":"No encontrado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Instrumentos - Privados"],
+        "summary": "Obtener instrumento privado por ID",
+        "security": [{ "jwtAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instrumento encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Instrument" }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       },
       "put": {
-        "tags":["Instrumentos - Privados"],
-        "summary":"Actualizar instrumento",
-        "security":[{"jwtAuth":[]}],
-        "parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"}}],
-        "requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Instrument"}}}},
-        "responses":{
-          "200":{"description":"Instrumento actualizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Instrument"}}}},
-          "401":{"description":"No autorizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}},
-          "404":{"description":"No encontrado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Instrumentos - Privados"],
+        "summary": "Actualizar instrumento",
+        "security": [{ "jwtAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Instrument" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Instrumento actualizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Instrument" }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       },
       "delete": {
-        "tags":["Instrumentos - Privados"],
-        "summary":"Eliminar instrumento",
-        "security":[{"jwtAuth":[]}],
-        "parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"}}],
-        "responses":{
-          "204":{"description":"Instrumento eliminado"},
-          "401":{"description":"No autorizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}},
-          "404":{"description":"No encontrado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Instrumentos - Privados"],
+        "summary": "Eliminar instrumento",
+        "security": [{ "jwtAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Instrumento eliminado" },
+          "401": {
+            "description": "No autorizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       }
     },
     "/v1/users/profile": {
       "put": {
-        "tags":["Usuarios - Privados"],
-        "summary":"Actualizar perfil de usuario",
-        "security":[{"jwtAuth":[]}],
-        "requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateProfileRequest"}}}},
-        "responses":{
-          "200":{"description":"Perfil actualizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}},
-          "401":{"description":"No autorizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Usuarios - Privados"],
+        "summary": "Actualizar perfil de usuario",
+        "security": [{ "jwtAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateProfileRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil actualizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       }
     },
     "/v1/users/plan": {
       "put": {
-        "tags":["Usuarios - Privados"],
-        "summary":"Cambiar plan de usuario",
-        "security":[{"jwtAuth":[]}],
-        "requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ChangePlanRequest"}}}},
-        "responses":{
-          "200":{"description":"Plan actualizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}},
-          "401":{"description":"No autorizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Usuarios - Privados"],
+        "summary": "Cambiar plan de usuario",
+        "security": [{ "jwtAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChangePlanRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Plan actualizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       }
     },
     "/v1/statistic": {
       "get": {
-        "tags":["Usuarios - Privados"],
-        "summary":"Obtener estadísticas del usuario",
-        "security":[{"jwtAuth":[]}],
-        "responses":{
-          "200":{"description":"Datos estadísticos","content":{"application/json":{"schema":{"$ref":"#/components/schemas/StatisticResponse"}}}},
-          "401":{"description":"No autorizado","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}
+        "tags": ["Usuarios - Privados"],
+        "summary": "Obtener estadísticas del usuario",
+        "security": [{ "jwtAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Datos estadísticos",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StatisticResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
         }
       }
     }
