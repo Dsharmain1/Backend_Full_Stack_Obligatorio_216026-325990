@@ -6,6 +6,8 @@ const {createInstrumentSchema} = require('../validators/create.instrument.schema
 const instrumentService = require('../services/instrument.service');
 const userService = require('../services/users.service');
 
+//publics
+
 const publicGetInstrumentById = async (req, res) => {
 
    const instrumentId = req.params.id;
@@ -25,9 +27,19 @@ const getAllInstruments = async (req, res) => {
     const instruments = await instrumentService.getAllInstruments(from, to);
     res.status(200).json(instruments);
   } catch (e) {
-    res.status(500).json({ error: "Error getting instruments" });
+
+    const statusCode = e.code || 500;
+    const message = e.message || "Error getting instruments";
+
+    res.status(statusCode).json({
+      error: message,
+      status: e.status || "internal_server_error",
+    });
   }
 };
+
+
+//protected 
 
 const getInstruments = async (req, res) => {
       try{
