@@ -36,7 +36,7 @@ const getAllInstruments = async (req, res) => {
       status: e.status || "internal_server_error",
     });
   }
-};
+}; 
 
 
 //protected 
