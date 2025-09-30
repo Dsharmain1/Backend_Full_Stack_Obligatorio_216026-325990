@@ -24,7 +24,7 @@ const getAllInstruments = async (from, to) => {
   } catch (e) {
     let error = new Error("Error getting all instruments");
     error.status = "internal_server_error";
-    error.code = StatusCodes.INTERNAL_SERVER_ERROR;
+    error.code = StatusCodes.INTERNAL_SERVER_ERROR;                  
     throw error;
   }
 };
