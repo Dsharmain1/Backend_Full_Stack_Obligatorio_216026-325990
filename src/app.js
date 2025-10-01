@@ -6,7 +6,7 @@ const { loggerMiddleware } = require('./middlewares/logger.middleware');
 const { authMiddleware } = require('./middlewares/auth.middleware');
 
 const swagger = require('swagger-ui-express');
-const swaggerJsonDoc = require('./documentation/swagger.json');
+const swaggerJsonDoc = require('./documentation/swagger.json.json');
 
 const privateRouter = require ('./routes/Instruments.router');
 const loginRouter = require ('./routes/login.router');
