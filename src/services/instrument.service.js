@@ -1,7 +1,8 @@
 const {StatusCodes} = require('http-status-codes');
 const buildInstrumentDTOResponse = require('../dtos/instrument.response.dto');
 const instrument = require('../models/instrument.model');
-const { find } = require('../models/user.model');
+const userService = require('../services/users.service');
+
 
 
 
@@ -78,8 +79,8 @@ const getInstrumentByUserId = async userId => {
 const deleteInstrument = async (instrumentId, userId) => {
     try {
         const instrumentToDelete = await findInstrumentByIdDB(instrumentId, userId);
-        console.log(instrumentToDelete);
-       await instrument.deleteOne({ _id: instrumentId });
+        await userService.decrementInstrumentCount(req.userId);
+        await instrument.deleteOne({ _id: instrumentId });
     } catch (error) {
         throw error;
     }
@@ -94,8 +95,17 @@ const createInstrument = async (title,description,price,category,condition,owner
         condition,
         ownerId
     });
+
+    if (!title || !description || !price || !category || !condition || !ownerId) {
+        let error = new Error("Missing required fields");
+        error.status = "bad_request";
+        error.code = StatusCodes.BAD_REQUEST;
+        throw error;
+    }
+
     try{
         const savedInstrument = await newInstrument.save();
+        await userService.incrementInstrumentCount(ownerId);
         return buildInstrumentDTOResponse(savedInstrument);
     }catch(e){
         console.log("Error creando instrumento", e);
@@ -134,7 +144,6 @@ const findInstrumentByTitle = async (title, userId) =>
     }
         
 }
-
 
 const findInstrumentByIdDB= async (instrumentId, userId) => {
     let foundInstrument;

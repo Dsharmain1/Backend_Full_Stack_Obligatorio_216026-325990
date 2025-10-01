@@ -1,42 +1,50 @@
-const bd = require('../models/db');
 const { createError } = require('../utils/error');
 const StatusCodes = require('http-status-codes');
 const {createInstrumentSchema} = require('../validators/create.instrument.schema');
 const instrumentService = require('../services/instrument.service');
-const userService = require('../services/users.service');
 
 //publics
 
 const publicGetInstrumentById = async (req, res) => {
+  const instrumentId = req.params.id;
 
-   const instrumentId = req.params.id;
+  if (!instrumentId) {
+    res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Instrument ID is required"));
+    return;
+  }
 
-    try{
-      const instrument = await instrumentService.getInstrumentById(instrumentId);
-      res.status(StatusCodes.OK).json(instrument);
-    }catch(error){
-      res.status(error.code || 500).json(createError(error.status, error.message));
-    }  
-
+  try {
+    const instrument = await instrumentService.getInstrumentById(instrumentId);
+    res.status(StatusCodes.OK).json(instrument);
+  } catch (error) {
+    res.status(error.code || 500).json(createError(error.status, error.message));
+  }
 }
+
 
 const getAllInstruments = async (req, res) => {
   const { from, to } = req.query;
+
+  if ((from && isNaN(Date.parse(from))) || (to && isNaN(Date.parse(to)))) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      error: "Invalid date format in query params",
+      status: "bad_request"
+    });
+    return;
+  }
+
   try {
     const instruments = await instrumentService.getAllInstruments(from, to);
     res.status(200).json(instruments);
   } catch (e) {
-
     const statusCode = e.code || 500;
     const message = e.message || "Error getting instruments";
-
     res.status(statusCode).json({
       error: message,
       status: e.status || "internal_server_error",
     });
   }
-}; 
-
+};
 
 //protected 
 
@@ -75,7 +83,6 @@ const deleteInstrument = async(req, res) => {
 
     try{
         await instrumentService.deleteInstrument(instrumentId, req.userId);
-        await userService.decrementInstrumentCount(req.userId);
         res.status(StatusCodes.NO_CONTENT).send();
     }catch(error){
         res.status(error.code || 500).json(createError(error.status, error.message));
@@ -111,16 +118,11 @@ const createInstrument = async (req, res) => {
       body.condition,
       req.userId
     );
-
-    await userService.incrementInstrumentCount(req.userId);
-
     res.status(StatusCodes.CREATED).json(newInstrument);
   } catch (error) {
     res.status(error.code || 500).json(createError(error.status, error.message));
   }
 };
-
-
 
 const updateInstrument = async (req, res) => {
   const instrumentId = req.params.id;

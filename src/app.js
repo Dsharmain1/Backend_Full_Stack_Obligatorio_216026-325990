@@ -29,15 +29,13 @@ app.use("/public/v1", loginRouter)
 app.use("/public/v1", signupRouter)
 app.use("/public/v1", publicInstrumentsRouter)
 app.use("/public/api-docs", swagger.serve, swagger.setup(swaggerJsonDoc));
-app.use("/v1", categoriesRouter);
-
 
 //ENDPOINTS PRIVADOS CON TOKEN
 app.use(authMiddleware);
 app.use("/v1", privateRouter);
 app.use("/v1", userRouter);
 app.use("/v1", userStatisticsRouter);
-
+app.use("/v1", categoriesRouter);
 
 
 (async () => {
