@@ -1,7 +1,6 @@
 const bd = require('../models/db');
 const { createError } = require('../utils/error');
 const StatusCodes = require('http-status-codes');
-const { number } = require('joi');
 const {createInstrumentSchema} = require('../validators/create.instrument.schema');
 const instrumentService = require('../services/instrument.service');
 const userService = require('../services/users.service');
