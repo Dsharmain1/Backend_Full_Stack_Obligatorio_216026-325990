@@ -12,7 +12,7 @@ const userStatistics = async (UserId) => {
 
         switch(user.plan){
             case "plus":
-                aux = count * 10;
+                aux = count * 10 + " %";
                 break;
             case "premium":
                 aux = count;
