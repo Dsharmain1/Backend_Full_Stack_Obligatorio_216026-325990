@@ -23,18 +23,9 @@ const publicGetInstrumentById = async (req, res) => {
 
 
 const getAllInstruments = async (req, res) => {
-  const { from, to } = req.query;
-
-  if ((from && isNaN(Date.parse(from))) || (to && isNaN(Date.parse(to)))) {
-    res.status(StatusCodes.BAD_REQUEST).json({
-      error: "Invalid date format in query params",
-      status: "bad_request"
-    });
-    return;
-  }
-
+  
   try {
-    const instruments = await instrumentService.getAllInstruments(from, to);
+    const instruments = await instrumentService.getAllInstruments();
     res.status(200).json(instruments);
   } catch (e) {
     const statusCode = e.code || 500;
@@ -49,8 +40,18 @@ const getAllInstruments = async (req, res) => {
 //protected 
 
 const getInstruments = async (req, res) => {
+
+  const { from, to } = req.query;
+  if ((from && isNaN(Date.parse(from))) || (to && isNaN(Date.parse(to)))) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      error: "Invalid date format in query params",
+      status: "bad_request"
+    });
+    return;
+  }
+
       try{
-        let instruments = await instrumentService.getInstrumentByUserId(req.userId);
+        let instruments = await instrumentService.getInstrumentByUserId(req.userId, from, to);
         res.status(StatusCodes.OK).json(instruments);
       }catch(error){
         res.status(error.code || 500).json(createError(error.status, error.message));

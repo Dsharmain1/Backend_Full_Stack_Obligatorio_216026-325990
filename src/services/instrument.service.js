@@ -6,21 +6,10 @@ const userService = require('../services/users.service');
 
 
 
-const getAllInstruments = async (from, to) => {
-  let filter = {};
-  if (from || to) {
-    filter.createdAt = {};
-    if (from) filter.createdAt.$gte = new Date(from);
-    if (to) {
-        const toDate = new Date(to);
-        toDate.setHours(23, 59, 59, 999);
-        filter.createdAt.$lte = toDate;
-    }
-    if (Object.keys(filter.createdAt).length === 0) delete filter.createdAt;
-  }
-
+const getAllInstruments = async () => {
+ 
   try {
-    const instruments = await instrument.find(filter);
+    const instruments = await instrument.find();
     return instruments.map(buildInstrumentDTOResponse);
   } catch (e) {
     let error = new Error("Error getting all instruments");
@@ -36,7 +25,6 @@ const getInstrumentById = async (instrumentId) => {
     try{
         foundInstrument = await instrument.findById(instrumentId);
     }catch(e){
-        console.log("Error buscando instrumento por ID", e);
         let error = new Error("Error finding instrument by ID");
         error.status = "internal_server_error";
         error.code = StatusCodes.INTERNAL_SERVER_ERROR;
@@ -61,9 +49,20 @@ const findInstrumentById = async (instrumentId, userId) => {
     }
 }
 
-const getInstrumentByUserId = async userId => {
+const getInstrumentByUserId = async (userId,from, to) => {
+    let filter = {};
+    if (from || to) {
+        filter.createdAt = {};
+    if (from) filter.createdAt.$gte = new Date(from);
+    if (to) {
+        const toDate = new Date(to);
+        toDate.setHours(23, 59, 59, 999);
+        filter.createdAt.$lte = toDate;
+    }
+    if (Object.keys(filter.createdAt).length === 0) delete filter.createdAt;
+  }
     try{
-        const instruments = await instrument.find({ownerId: userId});
+        const instruments = await instrument.find({ownerId: userId, ...filter});
         let instrumentResponse = instruments.map(instrument =>{
             return buildInstrumentDTOResponse(instrument);  
         });
