@@ -86,15 +86,7 @@ const deleteInstrument = async (instrumentId, userId) => {
 }
 
 const createInstrument = async (title,description,price,category,condition,ownerId) => {
-    const newInstrument = new instrument({
-        title,
-        description, 
-        price,
-        category,
-        condition,
-        ownerId
-    });
-
+    // Validate required fields early
     if (!title || !description || !price || !category || !condition || !ownerId) {
         let error = new Error("Missing required fields");
         error.status = "bad_request";
@@ -102,11 +94,33 @@ const createInstrument = async (title,description,price,category,condition,owner
         throw error;
     }
 
+    // Reserve quota / validate user plan before creating the document
+    // This allows incrementInstrumentCount to throw a FORBIDDEN error which
+    // will be propagated to the controller (so client receives correct 403)
+    await userService.incrementInstrumentCount(ownerId);
+
+    const newInstrument = new instrument({
+        title,
+        description,
+        price,
+        category,
+        condition,
+        ownerId
+    });
+
     try{
         const savedInstrument = await newInstrument.save();
-        await userService.incrementInstrumentCount(ownerId);
         return buildInstrumentDTOResponse(savedInstrument);
     }catch(e){
+        // If saving the instrument fails after we already incremented the user's count,
+        // attempt a rollback to keep counts consistent. If rollback fails, log it but
+        // don't hide the original error.
+        try{
+            await userService.decrementInstrumentCount(ownerId);
+        }catch(rollbackErr){
+            console.error('Failed to rollback instrument count for user', ownerId, rollbackErr);
+        }
+
         console.log("Error creando instrumento", e);
         let error = new Error("Error creating instrument");
         error.status = "internal_server_error";
