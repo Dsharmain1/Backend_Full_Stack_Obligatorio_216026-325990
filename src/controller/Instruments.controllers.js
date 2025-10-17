@@ -70,13 +70,18 @@ const getInstrumentById = async (req, res) => {
 }
 
 const getInstrumentByTitle = async (req, res) => {
-    const instrumentTitle = req.params.title;
-    try{
-        const instrument = await instrumentService.findInstrumentByTitle(instrumentTitle, req.userId);
-        res.status(StatusCodes.OK).json(instrument);
-    }catch(error){
-        res.status(error.code || 500).json(createError(error.status, error.message));
+  const instrumentTitle = req.params.title;
+  try{
+    const instruments = await instrumentService.findInstrumentByTitle(instrumentTitle, req.userId);
+
+    if (!instruments || instruments.length === 0) {
+      return res.status(StatusCodes.NOT_FOUND).json(createError("not_found", `Instrument with title ${instrumentTitle} not found`));
     }
+
+    return res.status(StatusCodes.OK).json(instruments);
+  }catch(error){
+    return res.status(error.code || 500).json(createError(error.status, error.message));
+  }
 }
 
 const deleteInstrument = async(req, res) => {

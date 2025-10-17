@@ -86,7 +86,6 @@ const deleteInstrument = async (instrumentId, userId) => {
 }
 
 const createInstrument = async (title,description,price,category,condition,ownerId) => {
-    // Validate required fields early
     if (!title || !description || !price || !category || !condition || !ownerId) {
         let error = new Error("Missing required fields");
         error.status = "bad_request";
@@ -94,9 +93,6 @@ const createInstrument = async (title,description,price,category,condition,owner
         throw error;
     }
 
-    // Reserve quota / validate user plan before creating the document
-    // This allows incrementInstrumentCount to throw a FORBIDDEN error which
-    // will be propagated to the controller (so client receives correct 403)
     await userService.incrementInstrumentCount(ownerId);
 
     const newInstrument = new instrument({
@@ -112,9 +108,6 @@ const createInstrument = async (title,description,price,category,condition,owner
         const savedInstrument = await newInstrument.save();
         return buildInstrumentDTOResponse(savedInstrument);
     }catch(e){
-        // If saving the instrument fails after we already incremented the user's count,
-        // attempt a rollback to keep counts consistent. If rollback fails, log it but
-        // don't hide the original error.
         try{
             await userService.decrementInstrumentCount(ownerId);
         }catch(rollbackErr){
@@ -140,22 +133,20 @@ const updateInstrument = async (instrumentId, userId, updatedData) => {
     }
 }
 
-const findInstrumentByTitle = async (title, userId) =>
-{
-    try{
-       const instrumentFound = await instrument.findOne({
-        title: { $regex: new RegExp(`^${title}$`, 'i') },
-        ownerId: userId});
-        console.log(instrumentFound);
-        return buildInstrumentDTOResponse(instrumentFound);
-    }
-    catch(e){
-        let error = new Error("Error finding instrument by title");
-        error.status = "internal_server_error";
-        error.code = StatusCodes.INTERNAL_SERVER_ERROR;
-        throw error;
-    }
-        
+const findInstrumentByTitle = async (title, userId) => {
+  try {
+    const instrumentsFound = await instrument.find({
+      title: { $regex: new RegExp(`^${title}$`, 'i') },
+      ownerId: userId
+    });
+
+    return instrumentsFound.map(buildInstrumentDTOResponse); 
+  } catch (e) {
+    let error = new Error("Error finding instrument by title");
+    error.status = "internal_server_error";
+    error.code = StatusCodes.INTERNAL_SERVER_ERROR;
+    throw error;
+  }
 }
 
 const findInstrumentByIdDB= async (instrumentId, userId) => {

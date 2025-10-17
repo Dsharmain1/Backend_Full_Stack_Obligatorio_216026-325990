@@ -429,6 +429,50 @@
         }
       }
     },
+    "/v1/instruments/title/{title}": {
+      "get": {
+        "tags": ["Instrumentos - Privados"],
+        "summary": "Buscar instrumentos por título (propietario)",
+        "security": [{ "jwtAuth": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "title",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instrumentos encontrados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Instrument" }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No encontrado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "No autorizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/users/profile": {
       "put": {
         "tags": ["Usuarios - Privados"],

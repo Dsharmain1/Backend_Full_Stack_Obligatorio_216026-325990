@@ -5,8 +5,7 @@ const createInstrumentSchema = Joi.object({
     category: Joi.string().valid('string', 'wind', 'percussion', 'keyboard').required(),
     price: Joi.number().positive().required(),
     condition: Joi.string().valid('new', 'used').required(),
-    description: Joi.string().max(500).optional()
+    description: Joi.string().max(500).required()
 });
 
-module.exports = { createInstrumentSchema }
-;
+module.exports = { createInstrumentSchema };
