@@ -26,6 +26,7 @@ const connectMongoDB = require('./repositories/mongo.client');
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use(loggerMiddleware);
 app.use(morgan("dev"));
 
