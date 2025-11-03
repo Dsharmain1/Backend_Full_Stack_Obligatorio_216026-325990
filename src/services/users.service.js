@@ -69,18 +69,24 @@ const updateProfile = async (userId, { firstName, lastName, email, password}) =>
         return buildUserDTOResponse(savedUser);
 
     }catch(e){
-        throw error;
+        throw e;
     }
 }
 
-const changePlan = async (userId, newPlan) => {
+const changePlan = async (userId) => {
     try{
         const user = await User.findById(userId);
-        user.plan = newPlan;
+        if(user.plan == "Premium"){
+            let error = new Error("user already in premium plan");
+            error.status = "bad_request";
+            error.code = StatusCodes.BAD_REQUEST;
+            throw error;
+        }
+        user.plan = "Premium";  
         const savedUser = await user.save();
         return buildUserDTOResponse(savedUser);
     }catch(e){
-        throw error;
+        throw e;
     }       
 }
 
