@@ -20,9 +20,17 @@ const doLogin = async ({ username, password }) => {
         return null;
     }
 
-    const token = jwt.sign({ username: user.username, userId: user._id.toString(), plan: user.plan }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" })
+    const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" })
 
-    return { token: token };
+    return { 
+        token: token,
+        user: {
+            username: user.username,
+            plan: user.plan,
+            firstName: user.firstName,
+            lastName: user.lastName
+        }
+    };
 }
 
 const registerUser = async ({ username, email, password, firstName, lastName}) => {
