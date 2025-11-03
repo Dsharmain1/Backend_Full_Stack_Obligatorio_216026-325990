@@ -76,13 +76,13 @@ const updateProfile = async (userId, { firstName, lastName, email, password}) =>
 const changePlan = async (userId) => {
     try{
         const user = await User.findById(userId);
-        if(user.plan == "Premium"){
+        if(user.plan == "premium"){
             let error = new Error("user already in premium plan");
             error.status = "bad_request";
             error.code = StatusCodes.BAD_REQUEST;
             throw error;
         }
-        user.plan = "Premium";  
+        user.plan = "premium";  
         const savedUser = await user.save();
         return buildUserDTOResponse(savedUser);
     }catch(e){
