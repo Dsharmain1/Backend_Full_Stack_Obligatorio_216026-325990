@@ -18,13 +18,8 @@ const updateProfile = async (req, res) => {
 }
 
 const changePlan = async (req, res) => {    
-    const { body } = req;
-    if (!body || !body.plan || (body.plan !== 'plus' && body.plan !== 'premium')) {
-        res.status(StatusCodes.BAD_REQUEST).json(createError("bad_request", "Invalid body"));
-        return;
-    }
     try {
-        const updatedUser = await userService.changePlan(req.userId, body.plan);
+        const updatedUser = await userService.changePlan(req.userId);
         res.status(StatusCodes.OK).json(updatedUser);
     } catch (error) {
         res.status(error.code || 500).json(createError(error.status, error.message));

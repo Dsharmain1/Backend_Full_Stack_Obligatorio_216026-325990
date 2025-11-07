@@ -20,9 +20,17 @@ const doLogin = async ({ username, password }) => {
         return null;
     }
 
-    const token = jwt.sign({ username: user.username, userId: user._id.toString() }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" })
+    const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" })
 
-    return { token: token };
+    return { 
+        token: token,
+        user: {
+            username: user.username,
+            plan: user.plan,
+            firstName: user.firstName,
+            lastName: user.lastName
+        }
+    };
 }
 
 const registerUser = async ({ username, email, password, firstName, lastName}) => {
@@ -69,18 +77,24 @@ const updateProfile = async (userId, { firstName, lastName, email, password}) =>
         return buildUserDTOResponse(savedUser);
 
     }catch(e){
-        throw error;
+        throw e;
     }
 }
 
-const changePlan = async (userId, newPlan) => {
+const changePlan = async (userId) => {
     try{
         const user = await User.findById(userId);
-        user.plan = newPlan;
+        if(user.plan == "premium"){
+            let error = new Error("user already in premium plan");
+            error.status = "bad_request";
+            error.code = StatusCodes.BAD_REQUEST;
+            throw error;
+        }
+        user.plan = "premium";  
         const savedUser = await user.save();
         return buildUserDTOResponse(savedUser);
     }catch(e){
-        throw error;
+        throw e;
     }       
 }
 

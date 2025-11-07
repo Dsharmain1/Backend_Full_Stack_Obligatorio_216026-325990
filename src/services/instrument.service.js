@@ -76,14 +76,22 @@ const getInstrumentByUserId = async (userId,from, to) => {
 }
 
 const deleteInstrument = async (instrumentId, userId) => {
-    try {
-        const instrumentToDelete = await findInstrumentByIdDB(instrumentId, userId);
-        await userService.decrementInstrumentCount(req.userId);
-        await instrument.deleteOne({ _id: instrumentId });
-    } catch (error) {
-        throw error;
+  try {
+    const instrumentToDelete = await findInstrumentByIdDB(instrumentId, userId);
+    
+    if (!instrumentToDelete) {
+      const error = new Error("Instrumento no encontrado");
+      error.code = 404;
+      throw error;
     }
-}
+
+    await userService.decrementInstrumentCount(userId);
+
+    await instrumentToDelete.deleteOne();
+  } catch (error) {
+    throw error;
+  }
+};
 
 const createInstrument = async (title,description,price,category,condition,ownerId, imageUrl) => {
     if (!title || !description || !price || !category || !condition || !ownerId) {
