@@ -113,7 +113,7 @@ const createInstrument = async (req, res) => {
     return;
   }
 
-  const { title } = body;
+    const { title, imageUrl } = body;
 
   try {
     const newInstrument = await instrumentService.createInstrument(
@@ -122,7 +122,8 @@ const createInstrument = async (req, res) => {
       body.price,
       body.category,
       body.condition,
-      req.userId
+      req.userId,
+      imageUrl
     );
     res.status(StatusCodes.CREATED).json(newInstrument);
   } catch (error) {

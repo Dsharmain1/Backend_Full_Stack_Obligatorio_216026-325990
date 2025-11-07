@@ -85,7 +85,7 @@ const deleteInstrument = async (instrumentId, userId) => {
     }
 }
 
-const createInstrument = async (title,description,price,category,condition,ownerId) => {
+const createInstrument = async (title,description,price,category,condition,ownerId, imageUrl) => {
     if (!title || !description || !price || !category || !condition || !ownerId) {
         let error = new Error("Missing required fields");
         error.status = "bad_request";
@@ -103,6 +103,10 @@ const createInstrument = async (title,description,price,category,condition,owner
         condition,
         ownerId
     });
+
+    if (imageUrl) {
+        newInstrument.imageUrl = imageUrl;
+    }
 
     try{
         const savedInstrument = await newInstrument.save();

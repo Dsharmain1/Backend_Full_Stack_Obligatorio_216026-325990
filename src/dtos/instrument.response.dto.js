@@ -8,6 +8,7 @@ const buildInstrumentDTOResponse = (instrument) => {
         price: instrument.price,
         category: instrument.category,
         condition: instrument.condition,
+        imageUrl: instrument.imageUrl,
         ownerId: instrument.ownerId ? instrument.ownerId.toString() : instrument.ownerId,
         createdAt: instrument.createdAt,
         updatedAt: instrument.updatedAt

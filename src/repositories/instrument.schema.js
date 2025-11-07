@@ -5,7 +5,8 @@ const instrumentSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     category: { type: String, required: true },
     condition: { type: String, required: true },
-    ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
+    ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    imageUrl: { type: String, required: false }
 }, { timestamps: true });
 
 // Ensure uniqueness of title per owner (allows same title across different users)
