@@ -49,31 +49,37 @@ const findInstrumentById = async (instrumentId, userId) => {
     }
 }
 
-const getInstrumentByUserId = async (userId,from, to) => {
-    let filter = {};
-    if (from || to) {
-        filter.createdAt = {};
+const getInstrumentByUserId = async (userId, from, to) => {
+  const filter = { ownerId: userId };
+
+  if (from || to) {
+    filter.createdAt = {};
+
     if (from) filter.createdAt.$gte = new Date(from);
+
     if (to) {
-        const toDate = new Date(to);
-        toDate.setHours(23, 59, 59, 999);
-        filter.createdAt.$lte = toDate;
+      const toDate = new Date(to);
+      toDate.setHours(23, 59, 59, 999); 
+      filter.createdAt.$lte = toDate;
     }
-    if (Object.keys(filter.createdAt).length === 0) delete filter.createdAt;
   }
-    try{
-        const instruments = await instrument.find({ownerId: userId, ...filter});
-        let instrumentResponse = instruments.map(instrument =>{
-            return buildInstrumentDTOResponse(instrument);  
-        });
-        return instrumentResponse;
-    }catch(e){
-        let error = new Error("Error getting instruments for user");
-        error.status = "internal_server_error";
-        error.code = StatusCodes.INTERNAL_SERVER_ERROR;
-        throw error;
-    }
-}
+
+  try {
+    const instruments = await instrument.find(filter).sort({ createdAt: -1 });
+
+    const instrumentResponse = instruments.map(inst =>
+      buildInstrumentDTOResponse(inst)
+    );
+
+    return instrumentResponse;
+  } catch (e) {
+    const error = new Error("Error getting instruments for user");
+    error.status = "internal_server_error";
+    error.code = StatusCodes.INTERNAL_SERVER_ERROR;
+    throw error;
+  }
+};
+
 
 const deleteInstrument = async (instrumentId, userId) => {
   try {
