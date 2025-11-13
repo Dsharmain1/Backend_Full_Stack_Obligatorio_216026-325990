@@ -107,14 +107,13 @@ const createInstrument = async (title,description,price,category,condition,owner
         throw error;
     }
 
-    // Verificar si ya existe un instrumento con el mismo título para este usuario
     const existingInstrument = await instrument.findOne({
         title: { $regex: new RegExp(`^${title}$`, 'i') },
         ownerId: ownerId
     });
 
     if (existingInstrument) {
-        let error = new Error("You already have an instrument with this title");
+        let error = new Error("Ya tienes un instrumento con ese título");
         error.status = "conflict";
         error.code = StatusCodes.CONFLICT;
         throw error;
