@@ -107,6 +107,19 @@ const createInstrument = async (title,description,price,category,condition,owner
         throw error;
     }
 
+    // Verificar si ya existe un instrumento con el mismo título para este usuario
+    const existingInstrument = await instrument.findOne({
+        title: { $regex: new RegExp(`^${title}$`, 'i') },
+        ownerId: ownerId
+    });
+
+    if (existingInstrument) {
+        let error = new Error("You already have an instrument with this title");
+        error.status = "conflict";
+        error.code = StatusCodes.CONFLICT;
+        throw error;
+    }
+
     await userService.incrementInstrumentCount(ownerId);
 
     const newInstrument = new instrument({
@@ -131,8 +144,6 @@ const createInstrument = async (title,description,price,category,condition,owner
         }catch(rollbackErr){
             console.error('Failed to rollback instrument count for user', ownerId, rollbackErr);
         }
-
-        console.log("Error creando instrumento", e);
         let error = new Error("Error creating instrument");
         error.status = "internal_server_error";
         error.code = StatusCodes.INTERNAL_SERVER_ERROR;
